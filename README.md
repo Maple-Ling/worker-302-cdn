@@ -45,13 +45,7 @@
 
 > **Zone Resources 必须限定到本域名**（单个 Zone），不要给「所有 Zone」。
 >
-> 权限不确定时用诊断脚本（只读、不打印 Token、不改配置）：
->
-> ```bash
-> node check-cf-token.mjs <API_TOKEN> ddns.example.com [ZONE_ID]
-> ```
->
-> 它会逐项列出上述权限是否通过，并给出补全建议。
+> 权限若缺失，切换 CDN 时会返回 502，错误详情会指明是哪一步失败。
 
 ## 二、KV 绑定
 
@@ -270,7 +264,7 @@ CDN 模式：
 | `xxx.<DDNS域名>:22843` 连不上 | 橙云域名 + 非标准端口，Cloudflare 不代理，属正常现象，必须走 Worker 跳转 |
 | 跳转后打不开 | 检查：① 路由器端口映射；② 目标服务是否在监听；③ KV 里的 `global:host` 是否是最新 IP |
 | 换了网络/端口后跳转失败 | Lucky 没触发上报。确认 Webhook 的触发条件，必要时手动保存一次配置 |
-| Token 报 `1000 Invalid API Token` | Token 无效或权限不足，用 `check-cf-token.mjs` 逐项诊断；注意要**限定单 Zone**，并在**用户级**页面创建 Token |
+| Token 报 `1000 Invalid API Token` | Token 无效或权限不足。注意要**限定单 Zone**，并在**用户级**页面（My Profile → API Tokens）创建 Token |
 
 ## 十三、HTTPS 方案（备选，未采用）
 
@@ -296,5 +290,4 @@ ingress:
 |---|---|
 | `worker.js` | Worker 主程序（单文件，含管理页 HTML） |
 | `部署与配置文档.md` | 本文档 |
-| `check-cf-token.mjs` | Cloudflare API Token 权限诊断脚本（只读、不打印 Token） |
 | `worker302.rar` | 历史打包文件（旧版本快照） |
